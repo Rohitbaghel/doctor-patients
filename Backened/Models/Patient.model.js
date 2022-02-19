@@ -4,11 +4,11 @@ const patientSchema=new mongoose.Schema({
     name: {type: String, required: true},
     age: {type: Number, required: true},
     gender: {type: String, required: true},
-    photo: {type: String, required: true},
-    madicineId: [{
+    // photo: {type: String, required: true},
+    medicineId: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'medicine',
-        required: true
+        ref: "medicine",
+        required: true,
     }]
 }, {
     versionKey: false,
