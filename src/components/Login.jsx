@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {Link,Navigate} from 'react-router-dom';
+import {Link,useNavigate} from 'react-router-dom';
 
 import { Auth } from './firebash';
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword} from 'firebase/auth';
 import {useRef} from 'react';
 export const Login=() => {
+    const Navigate = useNavigate()
     const emailRef=useRef(null)
     const passwordRef=useRef(null)
     
@@ -15,9 +16,8 @@ export const Login=() => {
         try { 
             const User=await signInWithEmailAndPassword(Auth, email, password);
             alert('Login successful');
-            <Navigate to={'/home'}/>
-            emailRef.current.value=""
-            passwordRef.current.value=""
+            Navigate('/home')
+          
           
         } catch (e) {
             alert(e.message)
@@ -30,10 +30,7 @@ export const Login=() => {
         try {
             const User=await createUserWithEmailAndPassword(Auth, email, password);
             alert('Account successful');
-            emailRef.current.value=""
-            passwordRef.current.value=""
-            // console.log(User)/
-            // <Navigate to="/" />
+            Navigate('/home')
         } catch (e) {
            alert(e.message)
             
