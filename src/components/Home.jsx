@@ -1,43 +1,59 @@
 import React, {useState} from 'react'
 import {useEffect} from 'react';
+import {Link} from 'react-router-dom';
+import {Navbar} from './Navbar';
 
 export const Home=() => {
     const [data, setData]=useState([]);
+    const [page, setPage]=useState(1)
+    const [size, setSize]=useState(0)
+    const totalSize=async () => {
+         const res=await fetch('http://localhost:2345/patient')
+        const data= await res.json();
+        // console.log(dat.length)
+        setSize(data)
+    }
     const appendedData=async () => {
-        const res=await fetch('http://localhost:2345/patient')
+        const res=await fetch(`http://localhost:2345/patient?page=${page}&size=${2}`)
         const dat= await res.json();
-        console.log(dat?.[0]?.medicineId[0])
+        // console.log(dat)
         setData(dat)
     }
     const filterByGender= async () => {
-        const res=await fetch('http://localhost:2345/patient/sortbyGend')
+        const res=await fetch(`http://localhost:2345/patient/sort/sortbyGend?page=${page}&size=${2}`)
         const dat= await res.json();
-        console.log(dat?.[0]?.medicineId[0])
+        // console.log("sort by gender",dat) 
         setData(dat)
     }
     const filterByAge= async () => {
-        const res=await fetch('http://localhost:2345/patient/sortbyAge')
+        const res=await fetch(`http://localhost:2345/patient/sort/sortbyAge?page=${page}&size=${2}`)
         const dat= await res.json();
-        console.log(dat?.[0]?.medicineId[0])
+        // console.log(dat?.[0]?.medicineId[0])
         setData(dat)
     }
+    useEffect(() => {
+        // appendedData()
+        totalSize()
+      }, [])
     
     useEffect(() => {
       appendedData()
-    }, [])
+    }, [page])
     useEffect( () => {
         filterByGender()
     }, [])
     useEffect( () => {
         filterByAge()
-  },[])
+  },[page])
   return (
       <>
+          <Navbar/>
           <h1 className='font-bold'>Patient Record</h1>
-          <div className="flex">
+          <div className="flex mx-10">
               <div className="w-4/5 border-2 mr-1">
                   {data.map((e) => (
-                      <div className='flex justify-between border-2 mb-2' key={e._id}>
+                    <Link to={`/home/${e._id}`}><div className='flex justify-evenly border-2 mb-2 bg-red-300' key={e._id}> 
+                    
                           <div className="">
                               <p>Name</p>
                               <p>{e.name}</p>
@@ -50,29 +66,13 @@ export const Home=() => {
                               <p>Gender</p>
                               <p>{e.gender}</p>
                           </div>
-                          <div className="">
-                              <p>Medicine1</p>
-                              <p>Name:{e?.medicineId[0]?.name}</p>
-                              <p>Quantity:{e?.medicineId[0]?.quantity}</p>
-                          </div>
-                          <div className="">
-                              <p>Medicine1</p>
-                              <p>Name:{e?.medicineId[1]?.name}</p>
-                              <p>Quantity:{e?.medicineId[1]?.quantity}</p>
-                          </div>
-                          <div className="">
-                              <p>Medicine1</p>
-                              <p>Name:{e?.medicineId[2]?.name}</p>
-                              <p>Quantity:{e?.medicineId[2]?.quantity}</p>
-                          </div>
-                          <div className="">
-                              <p>Medicine1</p>
-                              <p>Name:{e?.medicineId[3]?.name}</p>
-                              <p>Quantity:{e?.medicineId[3]?.quantity}</p>
-                          </div>
-                        
                       </div>
-               ))}
+                          </Link>
+                  ))}
+                      <div className='flex justify-center gap-12'>
+                      <button className='border-2 w-12 rounded-lg font-bold bg-red-800' onClick={() => setPage(page-1)} disabled={page===1 ? true : false}>Prev</button>
+                      <button className='border-2 w-12 rounded-lg font-bold bg-red-800' onClick={()=>setPage(page+1)} disabled={page===size.length-2 ? true : false}>Next</button> 
+                      </div>
               </div>
               <div className="w-1/5 border-2">
                   <h1 className='font-bold'>Sorting by:</h1>

@@ -3,7 +3,11 @@ import {Link,Navigate} from 'react-router-dom';
 
 import { Auth } from './firebash';
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword} from 'firebase/auth';
+import {useRef} from 'react';
 export const Login=() => {
+    const emailRef=useRef(null)
+    const passwordRef=useRef(null)
+    
     const [email, setEmail]=useState('');
     const [password, setPassword]=useState('');
     const signIn=async (e) => {
@@ -11,7 +15,9 @@ export const Login=() => {
         try { 
             const User=await signInWithEmailAndPassword(Auth, email, password);
             alert('Login successful');
-          
+            <Navigate to={'/home'}/>
+            emailRef.current.value=""
+            passwordRef.current.value=""
           
         } catch (e) {
             alert(e.message)
@@ -24,6 +30,8 @@ export const Login=() => {
         try {
             const User=await createUserWithEmailAndPassword(Auth, email, password);
             alert('Account successful');
+            emailRef.current.value=""
+            passwordRef.current.value=""
             // console.log(User)/
             // <Navigate to="/" />
         } catch (e) {
@@ -41,9 +49,9 @@ export const Login=() => {
             <p className='text-2xl font-bold mb-5 '>Sign-in</p>
             <form action="">
                 <p className='mb-1'>Email</p>
-                <input type="text" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)}  className="h-8 mb-3 bg-white border-black border-2 " style={{width:'98%'}}/>
+                <input type="text" autoComplete="off" value={email} onChange={e=>setEmail(e.target.value)} ref={emailRef}  className="h-8 mb-3 bg-white border-black border-2 " style={{width:'98%'}}/>
                 <p className='mb-1'>Password</p>
-                <input type="password" autoComplete='off' value={password} onChange={e=>setPassword(e.target.value)} className="h-8 mb-3 bg-white border-black border-2" style={{width:'98%'}} /><br />
+                <input type="password" autoComplete='off' value={password} onChange={e=>setPassword(e.target.value)} ref={passwordRef} className="h-8 mb-3 bg-white border-black border-2" style={{width:'98%'}} /><br />
                 <button className='border-2 w-full h-8 mt-3 text-xl font-bold bg-yellow-500 rounded-sm ' type="submit" onClick={signIn} >Sign in</button>
             </form>
             <p className='text-md m-auto mt-2'>
